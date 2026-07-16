@@ -4,7 +4,7 @@ Reference implementations, toy models, diagnostic tools, and reproducibility mat
 
 Project website: www.ree-framework.org
 
-[b]Status[/b]
+Status
 
 This repository is research software under active development.
 
