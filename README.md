@@ -1,284 +1,194 @@
-# ree-code
+# REE Code
 
-Reference implementations, toy models, diagnostic tools, and reproducibility materials for Recursive Epistemic Economy (REE), a finite-c framework for testing structured-efficiency cosmology under explicit runtime, readout, and admissibility constraints.
+[![Tests](https://github.com/REE-Framework/ree-code/actions/workflows/tests.yml/badge.svg)](https://github.com/REE-Framework/ree-code/actions/workflows/tests.yml)
+[![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
+[![Project website](https://img.shields.io/badge/website-ree--framework.org-informational.svg)](https://www.ree-framework.org/)
 
-Project website: www.ree-framework.org
+Reference implementations, toy models, diagnostic tools, and reproducibility materials for **Recursive Epistemic Economy (REE)**, a finite-*c* framework for testing structured-efficiency cosmology under explicit runtime, readout, and admissibility constraints.
 
-Status
+**Project website:** [www.ree-framework.org](https://www.ree-framework.org/)  
+**Repository:** [github.com/REE-Framework/ree-code](https://github.com/REE-Framework/ree-code)
 
-This repository is research software under active development.
+## Release status
 
-Unless a release is explicitly marked otherwise:
+This is **v0.1.0**, the initial public code package. It provides functional demonstrations and reusable analysis utilities, not a claim that the full REE physical programme has been numerically completed.
 
-implementations should be treated as provisional;
-interfaces, configuration formats, and numerical defaults may change;
-toy models are demonstrations of declared mechanisms, not full cosmological simulations;
-exploratory results are not part of the canonical REE claim set;
-the manuscript and release notes remain authoritative for scientific scope.
+The package separates:
 
-For reproducible work, use a numbered release rather than the moving main branch.
+- **registered metadata**, which mirrors declared REE discriminator labels and status;
+- **validation utilities**, which test numerical and readout behaviour;
+- **demonstrations**, which instantiate finite-speed fronts and boundary ledgers;
+- **exploratory code**, which must not be represented as canonical prediction code without explicit promotion.
 
-Project context
+A successful run shows that the implementation behaves as declared. It does not establish an ontological interpretation or empirical confirmation of REE.
 
-Recursive Epistemic Economy begins from a simple operational constraint: a physical law must remain executable and verifiable under finite signal speed, finite resolution, finite runtime, and finite institutional or observational windows, without hidden supertasks.
+## Included packages
 
-The wider REE programme examines whether familiar continuum laws can arise as stable coarse-grained limits of constructive finite-resource dynamics, and whether any finite-resolution remainders produce registered empirical signatures.
+| Package | Purpose | Scientific status in v0.1.0 |
+|---|---|---|
+| `ree.algorithm_a` | Finite-speed damped-wave front demonstration with scheme-specific CFL validation | Demonstration / validation scaffold |
+| `ree.readout` | Coarse-graining, quantized finite-resolution readout, and RRIP-style comparison | General validation utility |
+| `ree.null_compute` | Conservative one-dimensional boundary-ledger demonstration | Demonstration / accounting utility |
+| `ree.discriminators` | Versioned register metadata plus P7 and phase-resolution helpers | Metadata and selected registered formulae |
+| `ree.reproducibility` | SHA-256 manifests and environment capture | Reproducibility utility |
 
-This repository contains the executable side of that programme. It is intended to make assumptions, update rules, tolerances, readout maps, nuisance controls, and numerical tests inspectable and reproducible.
+The package map and limitations are described in [`docs/PACKAGE_MAP.md`](docs/PACKAGE_MAP.md) and [`docs/SCIENTIFIC_SCOPE.md`](docs/SCIENTIFIC_SCOPE.md).
 
-It does not convert an interpretive claim into an established physical result merely because code can instantiate it.
+## Installation
 
-Three-layer discipline
+Python 3.11 or later is required.
 
-REE distinguishes three levels:
-
-Epistemic level — what embedded observers can certify under finite-c, finite-window conditions.
-Constructive level — explicit update schemes and reduced descriptions satisfying declared admissibility rules.
-Ontological level — proposed physical interpretations of the regularities generated or captured by the constructive level.
-
-The code in this repository belongs primarily to the constructive level and, where it implements registered observables or readout procedures, to the epistemic level.
-
-A successful numerical run at level 2 does not by itself establish a level-3 interpretation. Promotion of any interpretation requires independent empirical discrimination under the registered REE protocol.
-
-Repository scope
-
-The repository is organised to support the following classes of material:
-
-constructive update schemes and toy implementations;
-finite-c runtime and admissibility checks;
-readout maps and Runtime-Readout Indistinguishability Principle (RRIP) tests;
-registered discriminator calculations;
-boundary-ledger and null-compute demonstrations;
-numerical conservation and convergence tests;
-scripts used to reproduce selected figures, tables, or reference outputs;
-configuration files defining declared parameter choices and tolerances;
-documentation connecting code components to the relevant manuscript sections.
-
-Only components actually present in a numbered release should be treated as implemented. Planned modules, commented stubs, issue discussions, and development branches are non-canonical.
-
-Repository layout
-ree-code/
-├── README.md
-├── LICENSE
-├── CITATION.cff
-├── CHANGELOG.md
-├── pyproject.toml
-├── src/
-│   └── ree/
-├── configs/
-├── examples/
-├── tests/
-├── docs/
-├── notebooks/
-├── data/
-│   └── README.md
-├── results/
-│   └── reference/
-└── .github/
-    ├── workflows/
-    └── ISSUE_TEMPLATE/
-
-The exact contents may differ between releases. Each implemented component should include:
-
-its purpose;
-scientific status;
-governing assumptions;
-input and output definitions;
-units and sign conventions;
-the command needed to run it;
-expected reference behaviour;
-known limitations;
-the manuscript section or discriminator to which it corresponds.
-Quick start
-1. Clone the repository
+```bash
 git clone https://github.com/REE-Framework/ree-code.git
 cd ree-code
-2. Create a virtual environment
-
-Windows:
-
 python -m venv .venv
+```
+
+Activate the environment:
+
+```powershell
+# Windows PowerShell
 .venv\Scripts\Activate.ps1
+```
 
-macOS or Linux:
-
-python3 -m venv .venv
+```bash
+# macOS or Linux
 source .venv/bin/activate
-3. Install the package
+```
+
+Install:
+
+```bash
 python -m pip install --upgrade pip
 python -m pip install -e .
+```
 
-For development and testing:
+For tests and development tools:
 
+```bash
 python -m pip install -e ".[dev]"
+```
 
-The supported Python version and dependency constraints are defined in pyproject.toml. That file is authoritative.
+## Quick checks
 
-4. Run the tests
+Run the complete test suite:
+
+```bash
 python -m pytest
-5. Run an example
+```
 
-Executable examples are stored in examples/. Each example should state its exact command, configuration file, expected runtime class, and expected output.
+List the REE discriminator metadata:
 
-python examples/<example_name>.py
+```bash
+ree registry
+```
 
-Do not assume that an example uses canonical or preregistered settings unless its documentation says so explicitly.
+Evaluate the registered P7 frequency scaling:
 
-Reproducibility contract
+```bash
+ree p7 --frequency 1000 100 10 0.001
+```
 
-A result should be described as reproducible from this repository only when the following are recorded:
+Run a finite-speed front demonstration:
 
-repository release or commit identifier;
-Python and dependency versions;
-configuration file;
-input data version or checksum;
-random seed, where applicable;
-hardware or accelerator assumptions, where materially relevant;
-numerical resolution and timestep;
-stopping rule;
-admissibility and convergence tolerances;
-nuisance model and control settings;
-output statistic and uncertainty convention;
-command used to generate the result.
+```bash
+ree front-demo --shape 24,24,24 --steps 20
+```
 
-Reference outputs belong in results/reference/ or in a release archive. Large external datasets should not be committed directly unless their licence and size make that appropriate. Instead, data/README.md should identify the source, version, checksum, preprocessing procedure, and access conditions.
+Run the conservative boundary-ledger demonstration:
 
-A changed numerical default is a scientific change when it can alter a registered conclusion. Such changes must be recorded in CHANGELOG.md and, where applicable, in the release notes.
+```bash
+ree ledger-demo --cells 256 --steps 220
+```
 
-Numerical and scientific safeguards
+Run a finite-resolution readout comparison:
 
-Implemented numerical models should include, where relevant:
+```bash
+ree rrip-demo
+```
 
-scheme-specific CFL or stability checks;
-finite-speed propagation constraints;
-convergence tests across declared resolutions;
-normalized energy or ledger residuals;
-explicit boundary-flux sign conventions;
-deterministic tests for limiting cases;
-dimensional checks;
-regression tests against frozen reference outputs;
-failure on inadmissible parameter combinations rather than silent correction;
-separation of detector-domain thresholds from underlying model amplitudes.
+## Examples
 
-Passing a software test means that the implementation behaves as declared. It does not mean that the physical hypothesis has been empirically confirmed.
+Standalone examples are in [`examples/`](examples/):
 
-Registered versus exploratory material
+```bash
+python examples/front_demo.py
+python examples/readout_demo.py
+python examples/null_compute_ledger_demo.py
+python examples/p7_target_demo.py
+python examples/registry_demo.py
+```
 
-Repository content should be labelled using the following categories:
+Example configurations are stored in [`configs/`](configs/). Frozen small reference outputs are stored in [`results/reference/`](results/reference/).
 
-Registered — implements a frozen discriminator, threshold, readout rule, or analysis path tied to a numbered REE release.
-Validation — tests numerical correctness, convergence, conservation, dimensional consistency, or recovery of known limits.
-Demonstration — illustrates a mechanism or constructive possibility without claiming a realistic physical model.
-Exploratory — investigates an unregistered extension, alternative parameterization, or candidate discriminator.
-Retired — preserved for provenance but no longer active in the current framework.
+## Three-layer discipline
 
-Exploratory material must not be presented as a prediction of REE until it has passed the framework’s declared promotion procedure.
+REE distinguishes:
 
-Relation to the REE publications
+1. **Epistemic:** what embedded observers can certify under finite-*c*, finite-window conditions.
+2. **Constructive:** explicit update schemes and reduced descriptions satisfying declared admissibility rules.
+3. **Ontological:** proposed physical interpretations of the regularities generated or captured by the constructive layer.
 
-The principal work is:
+Most code in this repository belongs to the constructive layer. The readout package also supports epistemic comparisons. Neither automatically establishes an ontological conclusion.
 
-Recursive Epistemic Economy — A framework for cosmic reproduction: Structured-efficiency cosmology in a finite-c information universe
-Mats J Lundqvist
+## Reproducibility contract
 
-The REE project also includes a narrative companion and technical companion appendices.
+A reproducible result should record:
 
-The project website provides publication information, current release status, and links:
+- repository release or commit identifier;
+- Python and dependency versions;
+- configuration file;
+- input version or checksum;
+- random seed, where applicable;
+- numerical resolution and timestep;
+- stopping rule;
+- admissibility and convergence tolerances;
+- output statistic and command used.
 
-https://www.ree-framework.org/
+Create a manifest for files used in an analysis:
 
-Where code corresponds to a publication section, the local documentation should identify:
+```bash
+ree manifest configs/algorithm_a_demo.json results/reference/front_demo_summary.json
+```
 
-volume;
-part, chapter, section, or appendix;
-equation, proposition, algorithm, or discriminator label;
-manuscript version;
-code release first implementing it.
+See [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
 
-Code and manuscript versions may develop at different rates. A result should therefore cite both when the correspondence matters.
+## Registered versus exploratory material
 
-Versioning
+Code or results should be labelled as one of:
 
-This repository uses semantic versioning where practical:
+- **Registered** — tied to a frozen REE discriminator, threshold, or readout rule.
+- **Validation** — checks numerical correctness, convergence, conservation, or known limits.
+- **Demonstration** — illustrates a declared mechanism without claiming a realistic full model.
+- **Exploratory** — investigates an unregistered extension or candidate discriminator.
+- **Retired** — retained for provenance but not active in the current framework.
 
-Patch release — corrections that do not intentionally change scientific scope.
-Minor release — new components, new diagnostics, or backward-compatible scientific extensions.
-Major release — incompatible interfaces, material restructuring, or changes to the declared implementation scope.
+Exploratory material must not be presented as an REE prediction merely because it resides in this repository.
 
-A Git tag identifies a code state. A GitHub release identifies the citable public package associated with that state.
+## Citation
 
-For scientific citation, prefer a release DOI or immutable release tag over main.
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Until an archived software DOI is assigned, cite the numbered GitHub release and the relevant REE publication.
 
-Citation
+Suggested form:
 
-Citation metadata is provided in CITATION.cff. GitHub should display a Cite this repository option when that file is present.
+> Lundqvist, Mats J. *REE Code: Reference implementations and reproducibility materials for Recursive Epistemic Economy*. Version 0.1.0, 2026. GitHub release.
 
-Until a software DOI has been assigned, cite the numbered GitHub release and the relevant REE publication. Once Zenodo or another archive has issued a DOI, use the DOI associated with the exact release used in the analysis.
+## Contributing
 
-Suggested software citation format:
+Corrections, tests, reproducibility improvements, and clearly labelled exploratory contributions are welcome. A merged contribution does not automatically become canonical REE. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-Lundqvist, Mats J. REE Code: Reference implementations and reproducibility materials for Recursive Epistemic Economy. Version X.Y.Z, year. GitHub release and archived DOI.
+## Licence
 
-Do not cite the repository landing page alone when the result depends on a specific code state.
+Source code is licensed under the **BSD 3-Clause License**. See [`LICENSE`](LICENSE).
 
-Contributing
+The licence does not automatically cover REE book text, diagrams, website content, project identity, or third-party material.
 
-Contributions are welcome when they improve correctness, reproducibility, documentation, testing, or clearly labelled exploration.
+## Author
 
-Before opening a pull request:
+**Mats J Lundqvist**  
+Recursive Epistemic Economy  
+[www.ree-framework.org](https://www.ree-framework.org/)
 
-open or identify an issue describing the proposed change;
-state whether the change is corrective, validating, demonstrative, exploratory, or canonical;
-identify affected manuscript references and configuration files;
-add or update tests;
-record any changed numerical output;
-update documentation and CHANGELOG.md where required.
+## Disclaimer
 
-A merged contribution does not automatically become part of the canonical REE framework. Canonical promotion requires explicit review against the relevant admissibility, readout, discriminator, notation, and cross-document consistency rules.
-
-See CONTRIBUTING.md for the full contribution protocol.
-
-Reporting problems
-
-Please use GitHub Issues for:
-
-reproducibility failures;
-numerical or logical errors;
-unit, sign, or notation inconsistencies;
-manuscript-to-code mismatches;
-unclear documentation;
-proposed tests or extensions.
-
-A useful bug report should include the release or commit, environment, configuration, command, observed output, expected output, and the smallest reproducible example available.
-
-Security-sensitive reports should follow SECURITY.md rather than being posted publicly.
-
-Licence
-
-Unless otherwise stated, source code in this repository is licensed under the BSD 3-Clause License. See LICENSE.
-
-The software licence does not automatically apply to:
-
-the REE books or manuscript text;
-diagrams reproduced from the publications;
-website content;
-project names, logos, or visual identity;
-third-party data or software;
-separately identified reference material.
-
-Those materials retain their own copyright or licence status.
-
-Author and maintenance
-
-Author: Mats J Lundqvist
-Project: Recursive Epistemic Economy
-Website: www.ree-framework.org
-Repository: github.com/REE-Framework/ree-code
-
-For scientific questions, first consult the relevant publication section and the component-specific documentation. For implementation problems, use GitHub Issues so the discussion remains traceable.
-
-Disclaimer
-
-This repository contains research software and conceptual or numerical models. It is provided without warranty and should not be treated as independently validated physical theory, production infrastructure, or a substitute for domain-specific verification.
-
-The evidential status of REE depends on registered empirical discrimination, not on the existence, complexity, or apparent success of a simulation.
+This repository contains research software, conceptual models, and numerical demonstrations. It is supplied without warranty and is not independently validated physical theory, production infrastructure, or a substitute for domain-specific verification.
