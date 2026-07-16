@@ -1,0 +1,10 @@
+{
+  "distance": 0.0,
+  "indistinguishable": true,
+  "norm": "linf",
+  "readout_shape": [
+    4,
+    4
+  ],
+  "tolerance": 0.0
+}

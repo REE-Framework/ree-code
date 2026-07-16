@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "Please cite the exact numbered release used and the relevant REE publication."
+title: "REE Code: Reference implementations and reproducibility materials for Recursive Epistemic Economy"
+type: software
+version: 0.1.0
+date-released: 2026-07-16
+license: BSD-3-Clause
+authors:
+  - family-names: Lundqvist
+    given-names: Mats J
+repository-code: "https://github.com/REE-Framework/ree-code"
+url: "https://www.ree-framework.org/"
+keywords:
+  - Recursive Epistemic Economy
+  - structured efficiency
+  - finite-resource physics
+  - reproducibility
+  - cosmology
+abstract: >-
+  Reference implementations, toy models, diagnostic tools, and reproducibility
+  materials for Recursive Epistemic Economy (REE), a finite-c framework for
+  testing structured-efficiency cosmology under explicit runtime, readout, and
+  admissibility constraints.

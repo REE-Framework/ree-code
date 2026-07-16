@@ -1,0 +1,7 @@
+{
+  "scientific_status": "validation",
+  "block": 2,
+  "resolution": 0.05,
+  "tolerance": 0.0,
+  "norm": "linf"
+}

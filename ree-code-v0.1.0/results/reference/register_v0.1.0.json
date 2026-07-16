@@ -1,0 +1,119 @@
+[
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P1a",
+    "note": "",
+    "programme_status": "conditional",
+    "regime": "cosmology",
+    "title": "Lawing-phase / dynamic-lambda discriminator"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P1b",
+    "note": "",
+    "programme_status": "conditional",
+    "regime": "cosmology",
+    "title": "Low-ell dark-energy quadrupole"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P2a",
+    "note": "Tier thresholds belong to the canonical register.",
+    "programme_status": "active / tiered",
+    "regime": "gravitational-wave",
+    "title": "Rogue-mode energy path-invariance"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "phase helper implemented",
+    "label": "P2b",
+    "note": "The 10^-3 rad regime requires high effective SNR and full controls.",
+    "programme_status": "prospective",
+    "regime": "gravitational-wave",
+    "title": "Phase-work invariance"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P2c",
+    "note": "",
+    "programme_status": "active",
+    "regime": "cosmology",
+    "title": "Entropy rebound / overshoot"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P3",
+    "note": "",
+    "programme_status": "active",
+    "regime": "galaxy dynamics",
+    "title": "Inner-slope universality"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P4",
+    "note": "",
+    "programme_status": "active",
+    "regime": "stellar dynamics",
+    "title": "Wide-binary heating floor"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "readout utility available",
+    "label": "P5",
+    "note": "",
+    "programme_status": "active",
+    "regime": "simulation / bridge",
+    "title": "Front-phase symmetry under RRIP"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P6",
+    "note": "",
+    "programme_status": "active",
+    "regime": "cosmology",
+    "title": "Front regularity in WL and RSD observables"
+  },
+  {
+    "canonical_source": "Main Part II; Appendix R\u2032",
+    "implementation_status": "frequency target implemented",
+    "label": "P7",
+    "note": "",
+    "programme_status": "prospective",
+    "regime": "gravitational-wave",
+    "title": "Computational-structure detector residual"
+  },
+  {
+    "canonical_source": "Main Part II; Appendices H\u2032 and R\u2032",
+    "implementation_status": "toy ledger only",
+    "label": "P8",
+    "note": "The included ledger is not a black-hole simulation.",
+    "programme_status": "prospective",
+    "regime": "black-hole",
+    "title": "Horizon-only readout / boundary-ledger closure"
+  },
+  {
+    "canonical_source": "Main Part II; Appendices H\u2032 and R\u2032",
+    "implementation_status": "metadata only",
+    "label": "P8b",
+    "note": "A definitive clean jet falsifies P8b only.",
+    "programme_status": "conditional branch",
+    "regime": "black-hole",
+    "title": "Clean-vacuum black-hole merger jet silence"
+  },
+  {
+    "canonical_source": "Candidate / future registration",
+    "implementation_status": "metadata only",
+    "label": "P9",
+    "note": "Not promoted to the active register.",
+    "programme_status": "under development",
+    "regime": "early universe",
+    "title": "Primordial-black-hole ignition candidate"
+  }
+]

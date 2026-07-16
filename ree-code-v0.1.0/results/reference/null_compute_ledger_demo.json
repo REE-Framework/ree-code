@@ -1,0 +1,11 @@
+{
+  "final": {
+    "cumulative_inflow": 0.0,
+    "cumulative_outflow": 0.02490195537880474,
+    "normalized_residual": 0.0,
+    "residual": 0.0,
+    "retained_quantity": 0.12549342429454602,
+    "step_index": 220
+  },
+  "initial_quantity": 0.15039537967335076
+}

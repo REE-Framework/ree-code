@@ -1,0 +1,13 @@
+{
+  "scientific_status": "demonstration",
+  "shape": [24, 24, 24],
+  "dx": 1.0,
+  "dt": 0.25,
+  "signal_speed": 1.0,
+  "damping": 0.05,
+  "mass": 0.0,
+  "boundary": "periodic",
+  "seed_amplitude": 1.0,
+  "seed_width": 3.0,
+  "steps": 20
+}

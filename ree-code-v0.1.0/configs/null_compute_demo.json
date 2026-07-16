@@ -1,0 +1,9 @@
+{
+  "scientific_status": "demonstration",
+  "cells": 256,
+  "steps": 220,
+  "speed": 1.0,
+  "length": 1.0,
+  "courant": 0.8,
+  "sample_every": 20
+}
