@@ -18,17 +18,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
+import numpy as np
 from scipy.fft import fftfreq, fftn, ifftn
+
+plt.switch_backend("Agg")
 
 
 Array = np.ndarray
@@ -128,7 +125,13 @@ def redundancy_rbar(rho: Array) -> tuple[float, Array]:
     return rbar, i_field
 
 
-def multiscale_rho_rec(rho_b: Array, sigmas: list[float], i_field: Array, nu: float, i0: float) -> Array:
+def multiscale_rho_rec(
+    rho_b: Array,
+    sigmas: list[float],
+    i_field: Array,
+    nu: float,
+    i0: float,
+) -> Array:
     """Complexity-weighted blend of small-scale and large-scale blur fields."""
     if not sigmas:
         return rho_b.copy()
@@ -140,9 +143,18 @@ def multiscale_rho_rec(rho_b: Array, sigmas: list[float], i_field: Array, nu: fl
     return rho_rec.astype(rho_b.dtype, copy=False)
 
 
-def mu_coefficient(i_field: Array, mu0: float, eta: float, i0: float, s_gate: float) -> Array:
+def mu_coefficient(
+    i_field: Array,
+    mu0: float,
+    eta: float,
+    i0: float,
+    s_gate: float,
+) -> Array:
     """Variable coefficient for the toy Poisson solve."""
-    coeff = 1.0 + mu0 * s_gate * np.power(np.clip(i_field / max(i0, 1e-6), 0.0, 1.0), eta)
+    coeff = 1.0 + mu0 * s_gate * np.power(
+        np.clip(i_field / max(i0, 1e-6), 0.0, 1.0),
+        eta,
+    )
     return coeff.astype(i_field.dtype, copy=False)
 
 
@@ -164,14 +176,44 @@ def solve_variable_poisson_3d(
     invdz2 = 1.0 / dz ** 2
     eps = np.finfo(rhs.dtype).eps
     rhs = (rhs - rhs.mean(dtype=np.float64)).astype(rhs.dtype, copy=False)
-    rhs_norm = max(float(np.linalg.norm(rhs.astype(np.float64))), 1.0) 
+    rhs_norm = max(float(np.linalg.norm(rhs.astype(np.float64))), 1.0)
     for iteration in range(max(int(iters), 1)):
-        kxp = 2.0 * coeff * np.roll(coeff, -1, 0) / (coeff + np.roll(coeff, -1, 0) + eps)
-        kxm = 2.0 * coeff * np.roll(coeff, 1, 0) / (coeff + np.roll(coeff, 1, 0) + eps)
-        kyp = 2.0 * coeff * np.roll(coeff, -1, 1) / (coeff + np.roll(coeff, -1, 1) + eps)
-        kym = 2.0 * coeff * np.roll(coeff, 1, 1) / (coeff + np.roll(coeff, 1, 1) + eps)
-        kzp = 2.0 * coeff * np.roll(coeff, -1, 2) / (coeff + np.roll(coeff, -1, 2) + eps)
-        kzm = 2.0 * coeff * np.roll(coeff, 1, 2) / (coeff + np.roll(coeff, 1, 2) + eps)
+        kxp = (
+            2.0
+            * coeff
+            * np.roll(coeff, -1, 0)
+            / (coeff + np.roll(coeff, -1, 0) + eps)
+        )
+        kxm = (
+            2.0
+            * coeff
+            * np.roll(coeff, 1, 0)
+            / (coeff + np.roll(coeff, 1, 0) + eps)
+        )
+        kyp = (
+            2.0
+            * coeff
+            * np.roll(coeff, -1, 1)
+            / (coeff + np.roll(coeff, -1, 1) + eps)
+        )
+        kym = (
+            2.0
+            * coeff
+            * np.roll(coeff, 1, 1)
+            / (coeff + np.roll(coeff, 1, 1) + eps)
+        )
+        kzp = (
+            2.0
+            * coeff
+            * np.roll(coeff, -1, 2)
+            / (coeff + np.roll(coeff, -1, 2) + eps)
+        )
+        kzm = (
+            2.0
+            * coeff
+            * np.roll(coeff, 1, 2)
+            / (coeff + np.roll(coeff, 1, 2) + eps)
+        )
 
         diagonal = (
             (kxp + kxm) * invdx2
@@ -180,9 +222,21 @@ def solve_variable_poisson_3d(
             + eps
         )
 
-        ax = (kxp * np.roll(phi, -1, 0) - (kxp + kxm) * phi + kxm * np.roll(phi, 1, 0)) * invdx2
-        ay = (kyp * np.roll(phi, -1, 1) - (kyp + kym) * phi + kym * np.roll(phi, 1, 1)) * invdy2
-        az = (kzp * np.roll(phi, -1, 2) - (kzp + kzm) * phi + kzm * np.roll(phi, 1, 2)) * invdz2
+        ax = (
+            kxp * np.roll(phi, -1, 0)
+            - (kxp + kxm) * phi
+            + kxm * np.roll(phi, 1, 0)
+        ) * invdx2
+        ay = (
+            kyp * np.roll(phi, -1, 1)
+            - (kyp + kym) * phi
+            + kym * np.roll(phi, 1, 1)
+        ) * invdy2
+        az = (
+            kzp * np.roll(phi, -1, 2)
+            - (kzp + kzm) * phi
+            + kzm * np.roll(phi, 1, 2)
+        ) * invdz2
 
         residual = rhs - (ax + ay + az)
         phi -= omega * residual / diagonal
@@ -196,7 +250,16 @@ def solve_variable_poisson_3d(
     return phi.astype(rhs.dtype, copy=False)
 
 
-def advect_semi_lagrangian_3d(rho: Array, vx: Array, vy: Array, vz: Array, dt: float, dx: float, dy: float, dz: float) -> Array:
+def advect_semi_lagrangian_3d(
+    rho: Array,
+    vx: Array,
+    vy: Array,
+    vz: Array,
+    dt: float,
+    dx: float,
+    dy: float,
+    dz: float,
+) -> Array:
     """Trilinear semi-Lagrangian advection with periodic wrapping."""
     dtype = rho.dtype
     nx, ny, nz = rho.shape
@@ -253,8 +316,8 @@ def project_convergence(delta: Array, chi_max: float) -> Array:
 def make_initial_density(cfg: dict[str, Any], rng: np.random.Generator, dtype: np.dtype) -> Array:
     nx, ny, nz = int(cfg["nx"]), int(cfg["ny"]), int(cfg["nz"])
     lx, ly, lz = float(cfg["lx"]), float(cfg["ly"]), float(cfg["lz"])
-    x = np.linspace(0.0, lx, nx, endpoint=False, dtype=dtype) 
-    y = np.linspace(0.0, ly, ny, endpoint=False, dtype=dtype) 
+    x = np.linspace(0.0, lx, nx, endpoint=False, dtype=dtype)
+    y = np.linspace(0.0, ly, ny, endpoint=False, dtype=dtype)
     z = np.linspace(0.0, lz, nz, endpoint=False, dtype=dtype)
     xg, yg, zg = np.meshgrid(x, y, z, indexing="ij")
 
@@ -264,10 +327,20 @@ def make_initial_density(cfg: dict[str, Any], rng: np.random.Generator, dtype: n
             cx, cy, cz = rng.uniform(0.0, lx), rng.uniform(0.0, ly), rng.uniform(0.0, lz)
             sigma = rng.uniform(3.0, 10.0)
             amplitude = rng.uniform(0.5, 1.5)
-            rho_b += amplitude * np.exp(-((xg - cx) ** 2 + (yg - cy) ** 2 + (zg - cz) ** 2) / (2.0 * sigma ** 2))
-        rho_b += 0.05 * np.exp(-((xg - lx / 2.0) ** 2 + (yg - ly / 2.0) ** 2 + (zg - lz / 2.0) ** 2) / (2.0 * 30.0 ** 2))
+            squared_distance = (xg - cx) ** 2 + (yg - cy) ** 2 + (zg - cz) ** 2
+            rho_b += amplitude * np.exp(-squared_distance / (2.0 * sigma**2))
+        central_distance = (
+            (xg - lx / 2.0) ** 2
+            + (yg - ly / 2.0) ** 2
+            + (zg - lz / 2.0) ** 2
+        )
+        rho_b += 0.05 * np.exp(-central_distance / (2.0 * 30.0**2))
     else:
-        radius = np.sqrt((xg - lx / 2.0) ** 2 + (yg - ly / 2.0) ** 2 + (zg - lz / 2.0) ** 2)
+        radius = np.sqrt(
+            (xg - lx / 2.0) ** 2
+            + (yg - ly / 2.0) ** 2
+            + (zg - lz / 2.0) ** 2
+        )
         rho_b = np.exp(-(radius / 20.0) ** 2) + 0.05 * np.exp(-(radius / 5.0) ** 2)
 
     return np.maximum(rho_b.astype(dtype, copy=False), np.finfo(dtype).tiny)
@@ -309,7 +382,11 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
 
     for step in range(int(cfg["n_steps"]) + 1):
         rbar, i_field = redundancy_rbar(rho_b)
-        xi = 0.0 if not history["Rbar"] else abs(rbar - history["Rbar"][-1]) / max(dt_phys, 1e-12)
+        xi = (
+            0.0
+            if not history["Rbar"]
+            else abs(rbar - history["Rbar"][-1]) / max(dt_phys, 1e-12)
+        )
         w = -1.0 + float(cfg["alpha"]) * rbar + float(cfg["beta"]) * xi
 
         h = h0 * np.sqrt(omega_b0 * max(a, 1e-12) ** (-3.0) + max(rho_l, 0.0))
@@ -318,8 +395,20 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
         rho_l *= np.exp(-3.0 * (1.0 + w) * dln_a)
 
         s_gate = switching_s(a, float(cfg["a_star"]), float(cfg["gate_m"]))
-        rho_rec = multiscale_rho_rec(rho_b, list(cfg["ell_sigmas"]), i_field, float(cfg["nu"]), float(cfg["I0"]))
-        coeff = mu_coefficient(i_field, float(cfg["mu0"]), float(cfg["eta"]), float(cfg["I0"]), s_gate)
+        rho_rec = multiscale_rho_rec(
+            rho_b,
+            list(cfg["ell_sigmas"]),
+            i_field,
+            float(cfg["nu"]),
+            float(cfg["I0"]),
+        )
+        coeff = mu_coefficient(
+            i_field,
+            float(cfg["mu0"]),
+            float(cfg["eta"]),
+            float(cfg["I0"]),
+            s_gate,
+        )
         rhs = (float(cfg["G4pi"]) * (rho_b + rho_rec)).astype(dtype, copy=False)
 
         phi = solve_variable_poisson_3d(
@@ -338,10 +427,10 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
         ax = -gx / max(a, 1e-12)
         ay = -gy / max(a, 1e-12)
         az = -gz / max(a, 1e-12)
-        hfac = 1.0 + h * dt_phys 
-        vx = (vx + ax * dt_phys) / hfac 
-        vy = (vy + ay * dt_phys) / hfac 
-        vz = (vz + az * dt_phys) / hfac 
+        hfac = 1.0 + h * dt_phys
+        vx = (vx + ax * dt_phys) / hfac
+        vy = (vy + ay * dt_phys) / hfac
+        vz = (vz + az * dt_phys) / hfac
 
         v_cap = (
             float(cfg.get("courant_cap", 0.5))
@@ -352,12 +441,12 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
         scale = np.minimum(
             1.0,
             v_cap / (speed + np.finfo(dtype).tiny),
-        ) 
-        vx *= scale 
-        vy *= scale 
-        vz *= scale 
+        )
+        vx *= scale
+        vy *= scale
+        vz *= scale
 
-        rho_b = advect_semi_lagrangian_3d(rho_b, vx, vy, vz, dt_phys, dx, dy, dz)        
+        rho_b = advect_semi_lagrangian_3d(rho_b, vx, vy, vz, dt_phys, dx, dy, dz)
         rho_b = np.maximum(rho_b, np.finfo(dtype).tiny)
 
         kcenters, pk = power_spectrum_3d(rho_b, dx, dy, dz)
@@ -371,11 +460,29 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
 
         if step % max(int(cfg["save_every"]), 1) == 0:
             mid = nz // 2
-            save_slice(outdir / f"rho_b_{step:04d}.png", rho_b[:, :, mid], f"rho_b midplane step {step} a={a:.3f}", [0, lx, 0, ly])
-            save_slice(outdir / f"phi_{step:04d}.png", phi[:, :, mid], f"Phi midplane step {step}", [0, lx, 0, ly])
-            delta = (rho_b / max(float(rho_b.mean()), 1e-12) - 1.0).astype(dtype, copy=False)
+            save_slice(
+                outdir / f"rho_b_{step:04d}.png",
+                rho_b[:, :, mid],
+                f"rho_b midplane step {step} a={a:.3f}",
+                [0, lx, 0, ly],
+            )
+            save_slice(
+                outdir / f"phi_{step:04d}.png",
+                phi[:, :, mid],
+                f"Phi midplane step {step}",
+                [0, lx, 0, ly],
+            )
+            delta = (rho_b / max(float(rho_b.mean()), 1e-12) - 1.0).astype(
+                dtype,
+                copy=False,
+            )
             kappa = project_convergence(delta, lz)
-            save_slice(outdir / f"kappa_{step:04d}.png", kappa, f"kappa proxy step {step}", [0, ly, 0, lz])
+            save_slice(
+                outdir / f"kappa_{step:04d}.png",
+                kappa,
+                f"kappa proxy step {step}",
+                [0, ly, 0, lz],
+            )
 
         a = a_next
         if a >= a_end:
@@ -403,7 +510,9 @@ def run(cfg: dict[str, Any]) -> dict[str, list[float]]:
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="3-D structured-efficiency pedagogical prototype")
+    parser = argparse.ArgumentParser(
+        description="3-D structured-efficiency pedagogical prototype"
+    )
     parser.add_argument("--nx", type=int, default=64)
     parser.add_argument("--ny", type=int, default=64)
     parser.add_argument("--nz", type=int, default=64)
@@ -413,27 +522,43 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--G4pi", type=float, default=1.0)
     parser.add_argument("--a-start", dest="a_start", type=float, default=0.02)
     parser.add_argument("--a-end", dest="a_end", type=float, default=1.0)
-    parser.add_argument("--n-steps", dest="n_steps", type=int, default=120) 
+    parser.add_argument("--n-steps", dest="n_steps", type=int, default=120)
     parser.add_argument("--dt-phys", dest="dt_phys", type=float, default=0.5)
-    parser.add_argument("--courant-cap", dest="courant_cap", type=float, default=0.5)    
+    parser.add_argument("--courant-cap", dest="courant_cap", type=float, default=0.5)
     parser.add_argument("--a-star", dest="a_star", type=float, default=9.0e-4)
     parser.add_argument("--gate-m", dest="gate_m", type=float, default=8.0)
     parser.add_argument("--mu0", type=float, default=2.0)
     parser.add_argument("--eta", type=float, default=0.35)
     parser.add_argument("--I0", type=float, default=0.5)
     parser.add_argument("--nu", type=float, default=0.35)
-    parser.add_argument("--ell-sigmas", dest="ell_sigmas", type=float, nargs="+", default=[1.5, 4.0, 8.0, 16.0])
+    parser.add_argument(
+        "--ell-sigmas",
+        dest="ell_sigmas",
+        type=float,
+        nargs="+",
+        default=[1.5, 4.0, 8.0, 16.0],
+    )
     parser.add_argument("--poisson-iters", dest="poisson_iters", type=int, default=600)
     parser.add_argument("--poisson-omega", dest="poisson_omega", type=float, default=0.6)
     parser.add_argument("--poisson-tol", dest="poisson_tol", type=float, default=1e-5)
-    parser.add_argument("--poisson-check-every", dest="poisson_check_every", type=int, default=10)
+    parser.add_argument(
+        "--poisson-check-every",
+        dest="poisson_check_every",
+        type=int,
+        default=10,
+    )
     parser.add_argument("--alpha", type=float, default=0.2)
     parser.add_argument("--beta", type=float, default=0.1)
     parser.add_argument("--Omega-b0", dest="Omega_b0", type=float, default=0.05)
     parser.add_argument("--Omega-L0", dest="Omega_L0", type=float, default=0.7)
     parser.add_argument("--H0", type=float, default=1.0)
     parser.add_argument("--rng-seed", dest="rng_seed", type=int, default=7)
-    parser.add_argument("--baryon-profile", dest="baryon_profile", choices=["blobs", "sphere"], default="blobs")
+    parser.add_argument(
+        "--baryon-profile",
+        dest="baryon_profile",
+        choices=["blobs", "sphere"],
+        default="blobs",
+    )
     parser.add_argument("--n-blobs", dest="n_blobs", type=int, default=10)
     parser.add_argument("--save-every", dest="save_every", type=int, default=20)
     parser.add_argument("--outdir", type=str, default="out_3d_stable")
